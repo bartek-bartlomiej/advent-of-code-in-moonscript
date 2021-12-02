@@ -1,9 +1,6 @@
 local Utils = require("utils")
 
 
-getmetatable("").__index = function (str, key) return string.sub(str, key, key) end
-
-
 function count_occurences(str, character)
     local _, count = string.gsub(str, character, character)
     return count
@@ -53,6 +50,8 @@ function part_two(input)
     return count_valid(input, is_valid)
 end
 
+
+Utils.enable_string_indexing()
 
 local PUZZLE = {
     year = 2020,

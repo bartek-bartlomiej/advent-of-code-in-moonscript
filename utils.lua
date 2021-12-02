@@ -5,6 +5,11 @@ local EXAMPLE_FILENAME = function(puzzle) return FILENAME(puzzle, ".example") en
 local INPUT_FILENAME = function(puzzle) return FILENAME(puzzle, ".input") end
 
 
+function M.enable_string_indexing()
+    getmetatable("").__index = function (str, key) return string.sub(str, key, key) end
+end
+
+
 function M.read_raw(filename)
     local file = assert(io.open(filename, "r"), "File not found")   
     local input = file:read("*all")

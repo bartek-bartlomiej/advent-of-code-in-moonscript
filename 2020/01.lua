@@ -1,23 +1,6 @@
 local Utils = require("utils")
 
 
-local parse_line = tonumber
-
-
-function parse_input(input)
-    local list = {}
-    
-    for _, line in ipairs(input) do
-        local number = parse_line(line)
-        assert(number)
-
-        table.insert(list, number)
-    end
-
-    return list
-end
-
-
 function part_one(input)
 
     function find_numbers(list)
@@ -35,7 +18,7 @@ function part_one(input)
         return nil
     end
 
-    local list = parse_input(input)
+    local list = Utils.parse_input(input, tonumber)
     local n1, n2 = find_numbers(list)
 
     return n1 * n2
@@ -62,7 +45,7 @@ function part_two(input)
         return nil
     end
     
-    local list = parse_input(input)
+    local list = Utils.parse_input(input, tonumber)
     local n1, n2, n3 = find_numbers(list)
     
     assert(n1, "Numbers not found")

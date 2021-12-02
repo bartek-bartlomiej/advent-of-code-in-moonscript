@@ -12,22 +12,8 @@ function parse_line(line)
 end
 
 
-function parse_input(input)
-    local list = {}
-    
-    for _, line in ipairs(input) do
-        local seat = parse_line(line)
-        assert(seat)
-
-        table.insert(list, seat)
-    end
-
-    return list
-end
-
-
 function part_one(input)
-    local seat_IDs = parse_input(input)
+    local seat_IDs = Utils.parse_input(input, parse_line)
 
     local max_ID = -1
     for _, seat_ID in ipairs(seat_IDs) do
@@ -41,7 +27,7 @@ end
 
 
 function part_two(input)
-    local seat_IDs = parse_input(input)
+    local seat_IDs = Utils.parse_input(input, parse_line)
     table.sort(seat_IDs)
 
     for i = 1, #seat_IDs - 1 do

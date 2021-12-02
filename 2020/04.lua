@@ -97,37 +97,6 @@ local REQUIRED_FIELD_AMOUNT = 8
 local IGNORED_FIELD = Fields.NAMES.COUNTRY_ID
 
 
-function parse_line(line)
-    passport = {
-        fields = {},
-        fields_amount = 0
-    }
-
-    local fields_amount = 0
-    for key, value in string.gmatch(line, "(%a%a%a):(%S+)") do
-        passport.fields[key] = value
-        fields_amount = fields_amount + 1
-    end
-
-    passport.fields_amount = fields_amount
-        
-    return passport
-end
-
-
-function parse_input(input)
-    input = string.gsub(input, "\n\n", "\t")
-    input = string.gsub(input, "\n", " ")
-
-    passports = {}
-    for line in string.gmatch(input, "([^\t]+)") do
-        table.insert(passports, parse_line(line))
-    end
-
-    return passports
-end
-
-
 function has_required_fields(passport)
     local fields_amount = passport.fields_amount
 
@@ -173,12 +142,30 @@ function count_valid(passports, is_valid)
 end
 
 
+function parse_line(line)
+    passport = {
+        fields = {},
+        fields_amount = 0
+    }
+
+    local fields_amount = 0
+    for key, value in string.gmatch(line, "(%a%a%a):(%S+)") do
+        passport.fields[key] = value
+        fields_amount = fields_amount + 1
+    end
+
+    passport.fields_amount = fields_amount
+        
+    return passport
+end
+
+
 function part_one(input)
     function is_valid(passport)   
         return has_required_fields(passport)
     end
 
-    local passports = parse_input(input)
+    local passports = Utils.parse_input(input, parse_line)
     return count_valid(passports, is_valid)
 end
 
@@ -188,7 +175,7 @@ function part_two(input)
         return has_required_fields(passport) and has_valid_fields(passport)
     end
 
-    local passports = parse_input(input)
+    local passports = Utils.parse_input(input, parse_line)
     return count_valid(passports, is_valid)
 end
 
@@ -198,8 +185,8 @@ local PUZZLE = {
     day = 4
 }
 
-Utils.check(PUZZLE, part_one, 10, Utils.read_raw)
-Utils.run(PUZZLE, part_one, Utils.read_raw)
+Utils.check(PUZZLE, part_one, 10, Utils.read_groups)
+Utils.run(PUZZLE, part_one, Utils.read_groups)
 
-Utils.check(PUZZLE, part_two, 6, Utils.read_raw)
-Utils.run(PUZZLE, part_two, Utils.read_raw)
+Utils.check(PUZZLE, part_two, 6, Utils.read_groups)
+Utils.run(PUZZLE, part_two, Utils.read_groups)

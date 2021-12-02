@@ -18,6 +18,7 @@ function M.read_raw(filename)
     return input
 end
 
+
 function M.read_lines(filename)
     local lines = {}
     for line in io.lines(filename) do
@@ -26,6 +27,36 @@ function M.read_lines(filename)
     
     return lines
 end
+
+
+function M.read_groups(filename)
+    local input = M.read_raw(filename)
+
+    input = string.gsub(input, "\n\n", "\t")
+    input = string.gsub(input, "\n", " ")
+
+    groups = {}
+    for line in string.gmatch(input, "[^\t]+") do
+        table.insert(groups, line)
+    end
+
+    return groups
+end
+
+
+function M.parse_input(input, parse_line)
+    local list = {}
+    
+    for _, line in ipairs(input) do
+        local element = parse_line(line)
+        assert(element)
+
+        table.insert(list, element)
+    end
+
+    return list
+end
+
 
 function M.check(puzzle, func, expected_value, read_input)
     local example_input = read_input(EXAMPLE_FILENAME(puzzle))

@@ -35,7 +35,6 @@ function part_one(input)
     horizontal_position = floor(horizontal_position)
     depth = floor(depth)
 
-    -- print(horizontal_position .. " x " .. depth)
     return horizontal_position * depth
 end
 
@@ -71,7 +70,6 @@ function part_two(input)
     position[DEPTH] = floor(position[DEPTH])
     position[AIM] = floor(position[AIM])
 
-    -- print(position[HORIZONTAL] .. " x " .. position[DEPTH])
     return position[HORIZONTAL] * position[DEPTH]
 end
 

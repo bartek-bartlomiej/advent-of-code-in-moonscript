@@ -1,4 +1,4 @@
-local utils = require('utils')
+local Utils = require("utils")
 
 
 local parse_line = tonumber
@@ -58,8 +58,8 @@ local PUZZLE = {
     day = 1
 }
 
-utils.check(PUZZLE, part_one, 7, utils.read_lines)
-utils.run(PUZZLE, part_one, utils.read_lines)
+Utils.check(PUZZLE, part_one, 7, Utils.read_lines)
+Utils.run(PUZZLE, part_one, Utils.read_lines)
 
-utils.check(PUZZLE, part_two, 5, utils.read_lines)
-utils.run(PUZZLE, part_two, utils.read_lines)
+Utils.check(PUZZLE, part_two, 5, Utils.read_lines)
+Utils.run(PUZZLE, part_two, Utils.read_lines)

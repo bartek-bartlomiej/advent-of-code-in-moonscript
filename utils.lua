@@ -1,8 +1,8 @@
 local M = {}
 
-local FILENAME = function(puzzle, suffix) return string.format('%d/%02d', puzzle.year, puzzle.day)..suffix end
-local EXAMPLE_FILENAME = function(puzzle) return FILENAME(puzzle, '.example') end
-local INPUT_FILENAME = function(puzzle) return FILENAME(puzzle, '.input') end
+local FILENAME = function(puzzle, suffix) return string.format("%d/%02d", puzzle.year, puzzle.day) .. suffix end
+local EXAMPLE_FILENAME = function(puzzle) return FILENAME(puzzle, ".example") end
+local INPUT_FILENAME = function(puzzle) return FILENAME(puzzle, ".input") end
 
 
 function M.read_raw(filename)
@@ -26,7 +26,7 @@ function M.check(puzzle, func, expected_value, read_input)
     local example_input = read_input(EXAMPLE_FILENAME(puzzle))
     local result = func(example_input)
     assert(result == expected_value, 
-        'Assertion failed, result is '..tostring(result)..', expected '..tostring(expected_value))
+        "Assertion failed, result is " .. tostring(result) .. ", expected " .. tostring(expected_value))
 end
 
 

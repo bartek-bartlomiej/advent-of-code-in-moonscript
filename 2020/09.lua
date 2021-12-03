@@ -105,47 +105,39 @@ function find_invalid_number(numbers)
 end
 
 
-
 function find_contiguous_set(sum, numbers)
-    assert(#numbers >= 2)
-    local current_sum = numbers[1] + numbers[2]
-    local i, j = 1, 2
     local size = #numbers
+    assert(size >= 2)
 
-    function add()
-        if j + 1 > size then 
-            return false
+    local calc
+
+    function add(i, j, acc)
+        if j == size then
+            error("Set not found")
         end
-        j = j + 1
-        current_sum = current_sum + numbers[j]
-        return true
+
+        return calc(i, j + 1, acc + numbers[j + 1])
     end
 
-    function substract()
-        current_sum = current_sum - numbers[i]
-        i = i + 1
+    function substract(i, j, acc)
+        return calc(i + 1, j, acc - numbers[i])
     end
 
-    while true do
-        if current_sum < sum then
-            if not add() then 
-                break 
-            end
-        elseif current_sum > sum then
-            if i == j and not add() then
-                break
-            end
-            substract()
+    function calc(i, j, acc)
+        if i == j then
+            return add(i, j, acc)
+        end
+
+        if acc < sum then
+            return add(i, j, acc)
+        elseif acc > sum then
+            return substract(i, j, acc)
         else
-            if i == j and not add() then
-                break
-            end
-            
             return i, j
         end
     end
 
-    error("Set not found")
+    return calc(1, 2, numbers[1] + numbers[2])
 end
 
 

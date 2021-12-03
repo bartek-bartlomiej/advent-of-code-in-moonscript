@@ -4,7 +4,7 @@ local Utils = require("utils")
 local parse_line = tonumber
 
 
-function part_one(input)
+local function part_one(input)
     local increase_count = 0
     local previous_depth
 
@@ -22,7 +22,7 @@ function part_one(input)
 end
 
 
-function part_two(input)
+local function part_two(input)
     local WINDOW_SIZE = 3
     local window = {}
 
@@ -35,7 +35,7 @@ function part_two(input)
 
         if #window ~= WINDOW_SIZE then
             table.insert(window, depth)
-            previous_sum = previous_sum + depth    
+            previous_sum = previous_sum + depth
         else
             local current_sum = previous_sum - window[1] + depth
             table.remove(window, 1)

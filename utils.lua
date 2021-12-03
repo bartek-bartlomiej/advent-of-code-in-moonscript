@@ -24,7 +24,7 @@ function M.read_lines(filename)
     for line in io.lines(filename) do
         table.insert(lines, line)
     end
-    
+
     return lines
 end
 
@@ -35,7 +35,7 @@ function M.read_groups(filename)
     input = string.gsub(input, "\n\n", "\t")
     input = string.gsub(input, "\n", " ")
 
-    groups = {}
+    local groups = {}
     for line in string.gmatch(input, "[^\t]+") do
         table.insert(groups, line)
     end
@@ -46,7 +46,7 @@ end
 
 function M.parse_input(input, parse_line)
     local list = {}
-    
+
     for _, line in ipairs(input) do
         local element = parse_line(line)
         assert(element)

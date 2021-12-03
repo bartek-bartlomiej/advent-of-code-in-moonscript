@@ -1,18 +1,18 @@
 local Utils = require("utils")
 
 
-function parse_line(line)
+local function parse_line(line)
     local seat = line
     seat = string.gsub(seat, "B", "1")
     seat = string.gsub(seat, "F", "0")
     seat = string.gsub(seat, "R", "1")
     seat = string.gsub(seat, "L", "0")
-    
+
     return tonumber(seat, 2)
 end
 
 
-function part_one(input)
+local function part_one(input)
     local seat_IDs = Utils.parse_input(input, parse_line)
 
     local max_ID = -1
@@ -26,7 +26,7 @@ function part_one(input)
 end
 
 
-function part_two(input)
+local function part_two(input)
     local seat_IDs = Utils.parse_input(input, parse_line)
     table.sort(seat_IDs)
 

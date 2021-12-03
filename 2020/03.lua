@@ -1,7 +1,7 @@
 local Utils = require("utils")
 
 
-function count_trees(rows, slide)
+local function count_trees(rows, slide)
     local TREE = "#"
     local trees_amount = 0
 
@@ -14,7 +14,7 @@ function count_trees(rows, slide)
     for position_y = 1, #rows, down do
         local row = rows[position_y]
         local char = row[position_x]
-        
+
         if char == TREE then
             trees_amount = trees_amount + 1
         end
@@ -29,12 +29,12 @@ function count_trees(rows, slide)
 end
 
 
-function part_one(input)
+local function part_one(input)
     return count_trees(input, { right = 3, down = 1 })
 end
 
 
-function part_two(input)
+local function part_two(input)
     local slides = {
         { right = 1, down = 1 },
         { right = 3, down = 1 },
@@ -42,12 +42,12 @@ function part_two(input)
         { right = 7, down = 1 },
         { right = 1, down = 2 }
     }
-    
+
     local results = {}
     for _, slide in pairs(slides) do
         table.insert(results, count_trees(input, slide))
     end
-    
+
     local output = 1
     for _, result in pairs(results) do
         output = output * result

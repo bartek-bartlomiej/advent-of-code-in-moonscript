@@ -34,7 +34,7 @@ Fields.NAMES = {
 }
 
 
-function validate_year(v, min, max)
+local function validate_year(v, min, max)
     if not string.find(v, "^%d%d%d%d$") then
         return false
     end
@@ -45,7 +45,7 @@ end
 
 
 Fields.validators = {
-    [Fields.NAMES.BIRTH_YEAR] = function (v) 
+    [Fields.NAMES.BIRTH_YEAR] = function (v)
         return validate_year(v, 1920, 2002)
     end,
 
@@ -57,15 +57,15 @@ Fields.validators = {
         return validate_year(v, 2020, 2030)
     end,
 
-    [Fields.NAMES.HEIGHT] = function (v) 
+    [Fields.NAMES.HEIGHT] = function (v)
         local height
-        
+
         _, _, height = string.find(v, "^(%d%d%d)cm$")
         if height then
             height = tonumber(height)
             return 150 <= height and height <= 193
         end
-        
+
         _, _, height = string.find(v, "^(%d%d)in$")
         if height then
             height = tonumber(height)
@@ -97,7 +97,7 @@ local REQUIRED_FIELD_AMOUNT = 8
 local IGNORED_FIELD = Fields.NAMES.COUNTRY_ID
 
 
-function has_required_fields(passport)
+local function has_required_fields(passport)
     local fields_amount = passport.fields_amount
 
     -- n = 0..7
@@ -118,7 +118,7 @@ function has_required_fields(passport)
 end
 
 
-function has_valid_fields(passport)
+local function has_valid_fields(passport)
     for field, value in pairs(passport.fields) do
         if not Fields.validators[field](value) then
             return false
@@ -129,7 +129,7 @@ function has_valid_fields(passport)
 end
 
 
-function count_valid(passports, is_valid)
+local function count_valid(passports, is_valid)
     local valid_amount = 0
 
     for _, passport in pairs(passports) do
@@ -142,8 +142,8 @@ function count_valid(passports, is_valid)
 end
 
 
-function parse_line(line)
-    passport = {
+local function parse_line(line)
+    local passport = {
         fields = {},
         fields_amount = 0
     }
@@ -155,13 +155,13 @@ function parse_line(line)
     end
 
     passport.fields_amount = fields_amount
-        
+
     return passport
 end
 
 
-function part_one(input)
-    function is_valid(passport)   
+local function part_one(input)
+    local function is_valid(passport)
         return has_required_fields(passport)
     end
 
@@ -170,8 +170,8 @@ function part_one(input)
 end
 
 
-function part_two(input)
-    function is_valid(passport)   
+local function part_two(input)
+    local function is_valid(passport)
         return has_required_fields(passport) and has_valid_fields(passport)
     end
 

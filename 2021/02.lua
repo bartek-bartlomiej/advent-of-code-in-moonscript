@@ -8,13 +8,13 @@ local ACTION_UP = "up"
 local ACTION_DOWN = "down"
 
 
-function parse_line(line)
+local function parse_line(line)
     local pattern = "(%S+) (%d+)"
     return match(line, pattern)
 end
 
 
-function part_one(input)
+local function part_one(input)
     local horizontal_position = 0
     local depth = 0
 
@@ -39,7 +39,7 @@ function part_one(input)
 end
 
 
-function part_two(input)
+local function part_two(input)
     local HORIZONTAL = "horizontal"
     local DEPTH = "depth"
     local AIM = "aim"
@@ -49,18 +49,18 @@ function part_two(input)
     position[DEPTH] = 0
     position[AIM] = 0
 
-    function change(key, value)
+    local function change(key, value)
         position[key] = position[key] + value
     end
 
     local callbacks = {}
     callbacks[ACTION_DOWN] = function (v) change(AIM, v) end
     callbacks[ACTION_UP] = function (v) change(AIM, -v) end
-    callbacks[ACTION_FORWARD] = function (v) 
+    callbacks[ACTION_FORWARD] = function (v)
         change(HORIZONTAL, v)
         change(DEPTH, position[AIM] * v)
     end
-    
+
     for _, line in ipairs(input) do
         local action, value = parse_line(line)
         callbacks[action](value)

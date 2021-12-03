@@ -1,13 +1,13 @@
 local Utils = require("utils")
 
 
-function count_occurences(str, character)
+local function count_occurences(str, character)
     local _, count = string.gsub(str, character, character)
     return count
 end
 
 
-function count_valid(input, is_valid)
+local function count_valid(input, is_valid)
     local valid_amount = 0
 
     local pattern = "(%d+)-(%d+) (%a): (%S+)"
@@ -21,29 +21,27 @@ function count_valid(input, is_valid)
 end
 
 
-function part_one(input)
-
-    function is_valid(password, character, low, high)
+local function part_one(input)
+    local function is_valid(password, character, low, high)
         local count = count_occurences(password, character)
-        return low <= count and count <= high 
+        return low <= count and count <= high
     end
 
     return count_valid(input, is_valid)
 end
 
 
-function part_two(input)
-    
-    function is_valid(password, character, first_position, second_position)
+local function part_two(input)
+    local function is_valid(password, character, first_position, second_position)
         local first_character = password[first_position]
         local second_character = password[second_position]
-    
+
         if first_character == character then
             return second_character ~= character
         elseif second_character == character then
             return first_character ~= character
         end
-    
+
         return false
     end
 

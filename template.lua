@@ -1,12 +1,12 @@
 local Utils = require("utils")
 
 
-function part_one(input)
+local function part_one(input)
     return 0
 end
 
 
-function part_two(input)
+local function part_two(input)
     return 0
 end
 

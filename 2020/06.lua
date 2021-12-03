@@ -20,7 +20,7 @@ function Mask.new(initial_value)
 end
 
 
-function get_group_answers(line)
+local function get_group_answers(line)
     local group = {}
 
     for answers in string.gmatch(line, "%S+") do
@@ -33,7 +33,7 @@ function get_group_answers(line)
 end
 
 
-function get_group_common_answers(line)
+local function get_group_common_answers(line)
     local group = {}
     Mask.reset(group, true)
 
@@ -54,9 +54,9 @@ function get_group_common_answers(line)
 end
 
 
-function count_answers(group)
+local function count_answers(group)
     local count = 0
-    
+
     for _, value in pairs(group) do
         if value then
             count = count + 1
@@ -67,7 +67,7 @@ function count_answers(group)
 end
 
 
-function sum_answers(groups)
+local function sum_answers(groups)
     local sum = 0
 
     for _, group in pairs(groups) do
@@ -78,13 +78,13 @@ function sum_answers(groups)
 end
 
 
-function part_one(input)
+local function part_one(input)
     local groups = Utils.parse_input(input, get_group_answers)
     return sum_answers(groups)
 end
 
 
-function part_two(input)
+local function part_two(input)
     local groups = Utils.parse_input(input, get_group_common_answers)
     return sum_answers(groups)
 end

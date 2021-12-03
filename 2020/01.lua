@@ -1,20 +1,20 @@
 local Utils = require("utils")
 
 
-function part_one(input)
+local function part_one(input)
 
-    function find_numbers(list)
+    local function find_numbers(list)
         for i = 1, #list do
             for j = i + 1, #list do
                 local n1 = list[i]
                 local n2 = list[j]
-        
+
                 if n1 + n2 == 2020 then
                     return n1, n2
                 end
             end
         end
-    
+
         return nil
     end
 
@@ -25,32 +25,31 @@ function part_one(input)
 end
 
 
-function part_two(input)
+local function part_two(input)
 
-    function find_numbers(list)
+    local function find_numbers(list)
         for i = 1, #list do
             for j = i + 1, #list do
                 for k = j + 1, #list do
                     local n1 = list[i]
                     local n2 = list[j]
                     local n3 = list[k]
-            
+
                     if n1 + n2 + n3 == 2020 then
                         return n1, n2, n3
                     end
                 end
             end
         end
-    
+
         return nil
     end
-    
+
     local list = Utils.parse_input(input, tonumber)
     local n1, n2, n3 = find_numbers(list)
-    
+
     assert(n1, "Numbers not found")
-    -- print(n1 .. " & " .. n2 .. " & " .. n3)
-    
+
     return n1 * n2 * n3
 end
 

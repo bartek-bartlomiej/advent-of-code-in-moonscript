@@ -3,8 +3,6 @@ local Utils = require("utils")
 
 local Window = {}
 
-Window.SIZE = 25
-
 
 local function calc_rounded_half(number, y)
     local sum = number + y
@@ -13,8 +11,8 @@ end
 
 
 local function binary_search(t, x, callback)
-    function find(i, j)
-        if j < i then 
+    local function find(i, j)
+        if j < i then
             return callback(i, false)
         end
 
@@ -35,25 +33,31 @@ end
 
 
 function Window:find(number)
-    return binary_search(self, number, function(i, found) 
-        if found then return i else return nil end 
-    end)
+    local function callback(i, found)
+        if found then return i else return nil end
+    end
+
+    return binary_search(self, number, callback)
 end
 
 
 function Window:remove(number)
-    return binary_search(self, number, function(i, found) 
+    local function callback(i, found)
         assert(found)
         table.remove(self, i)
-    end)
+    end
+
+    return binary_search(self, number, callback)
 end
 
 
 function Window:insert(number)
-    return binary_search(self, number, function(i) 
+    local function callback(i)
         table.insert(self, i, number)
         return i
-    end)
+    end
+
+    return binary_search(self, number, callback)
 end
 
 
@@ -77,9 +81,9 @@ function Window:shift(prev_number, next_number)
 end
 
 
-function Window.new(numbers)
+function Window.new(numbers, size)
     local window = {}
-    for i = 1, Window.SIZE do
+    for i = 1, size do
         table.insert(window, numbers[i])
     end
     table.sort(window)
@@ -88,30 +92,30 @@ function Window.new(numbers)
 end
 
 
-function find_invalid_number(numbers)
-    local window = Window.new(numbers)
+local function find_invalid_number(numbers, window_size)
+    local window = Window.new(numbers, window_size)
 
-    for i = Window.SIZE + 1, #numbers do
+    for i = window_size + 1, #numbers do
         local current_number = numbers[i]
-        
+
         if not window:has_pair(current_number) then
             return current_number
         end
 
-        window:shift(numbers[i - Window.SIZE], current_number)
+        window:shift(numbers[i - window_size], current_number)
     end
 
     error("Invalid number not found")
 end
 
 
-function find_contiguous_set(sum, numbers)
+local function find_contiguous_set(sum, numbers)
     local size = #numbers
     assert(size >= 2)
 
     local calc
 
-    function add(i, j, acc)
+    local function add(i, j, acc)
         if j == size then
             error("Set not found")
         end
@@ -119,7 +123,7 @@ function find_contiguous_set(sum, numbers)
         return calc(i, j + 1, acc + numbers[j + 1])
     end
 
-    function substract(i, j, acc)
+    local function substract(i, j, acc)
         return calc(i + 1, j, acc - numbers[i])
     end
 
@@ -141,7 +145,7 @@ function find_contiguous_set(sum, numbers)
 end
 
 
-function find_min_max(numbers, first, last)
+local function find_min_max(numbers, first, last)
     local min, max = numbers[first], numbers[last]
     if min > max then
         min, max = max, min
@@ -159,39 +163,44 @@ function find_min_max(numbers, first, last)
     return min, max
 end
 
-function part_one(input)
+
+local TEST_WINDOW_SIZE = 5
+local WINDOW_SIZE = 25
+
+
+local function _part_one(input, window_size)
     local numbers = Utils.parse_input(input, tonumber)
-    return find_invalid_number(numbers)
+    return find_invalid_number(numbers, window_size)
 end
 
 
-function part_two(input)
+local function part_one(input)
+    return _part_one(input, WINDOW_SIZE)
+end
+
+
+local function test_part_one(input)
+    return _part_one(input, TEST_WINDOW_SIZE)
+end
+
+
+local function _part_two(input, window_size)
     local numbers = Utils.parse_input(input, tonumber)
-    local invalid_number = find_invalid_number(numbers)
-    
+    local invalid_number = find_invalid_number(numbers, window_size)
+
     local first_element, last_element = find_contiguous_set(invalid_number, numbers)
     local min, max = find_min_max(numbers, first_element, last_element)
     return min + max
 end
 
 
-function test_part_one(input)
-    local default_size = Window.SIZE
-    Window.SIZE = 5
-    local result = part_one(input)
-    Window.SIZE = default_size
-
-    return result
+local function part_two(input)
+    return _part_two(input, WINDOW_SIZE)
 end
 
 
-function test_part_two(input)
-    local default_size = Window.SIZE
-    Window.SIZE = 5
-    local result = part_two(input)
-    Window.SIZE = default_size
-
-    return result
+local function test_part_two(input)
+    return _part_two(input, TEST_WINDOW_SIZE)
 end
 
 

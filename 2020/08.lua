@@ -30,7 +30,7 @@ local Machine = {}
 
 
 Machine.STOP_OK = 1
-Machine.STOP_LOOP = 2 
+Machine.STOP_LOOP = 2
 
 
 function Machine:execute()
@@ -38,7 +38,7 @@ function Machine:execute()
     if self.run_map[self.instruction_pointer] then return Machine.STOP_LOOP end
 
     self.run_map[self.instruction_pointer] = true
-    
+
     local instruction = self.instructions[self.instruction_pointer]
     return Instructions[instruction.operation](self, instruction.argument)
 end
@@ -56,7 +56,7 @@ function Machine.new(instructions)
 end
 
 
-function parse_input(input)
+local function parse_input(input)
     local pattern = "(%a%a%a) ([%+%-]%d+)"
 
     local instructions = {}
@@ -68,23 +68,23 @@ function parse_input(input)
 end
 
 
-function part_one(input)
+local function part_one(input)
     local instructions = parse_input(input)
 
     local machine = Machine.new(instructions)
     local execute_result = machine:execute()
-    assert(execute == STOP_LOOP)
+    assert(execute_result == Machine.STOP_LOOP)
 
     return machine.accumulator
 end
 
 
-function part_two(input)
+local function part_two(input)
     local instructions = parse_input(input)
 
     local machine = Machine.new(instructions)
     local execute_result = machine:execute()
-    assert(execute == STOP_LOOP)
+    assert(execute_result == Machine.STOP_LOOP)
 
     local swapped_operations = {
         [Instructions.NAMES.NOP] = Instructions.NAMES.JMP,
@@ -96,20 +96,20 @@ function part_two(input)
         local operation = instruction.operation
         local swapped_operation = swapped_operations[operation]
 
-        if operation ~= Instructions.NAMES.ACC and 
+        if operation ~= Instructions.NAMES.ACC and
             not (operation == Instructions.NAMES.NOP and instruction.argument == 0) then
 
             instructions[i].operation = swapped_operation
 
-            local machine = Machine.new(instructions)
-            local execute_result = machine:execute()
+            local fixed_machine = Machine.new(instructions)
+            local fixed_execute_result = fixed_machine:execute()
 
-            if execute_result == Machine.STOP_OK then
-                return machine.accumulator
+            if fixed_execute_result == Machine.STOP_OK then
+                return fixed_machine.accumulator
             end
 
             instructions[i].operation = operation
-        end        
+        end
     end
 
     error("Single swapping failed")

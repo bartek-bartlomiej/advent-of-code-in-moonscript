@@ -14,7 +14,7 @@ Line.TYPE = {
 function Line.parse(input)
     local x1, y1, x2, y2 = string.match(input, "(%d+),(%d+) %-> (%d+),(%d+)")
     local p1, p2 = { x = tonumber(x1) + 1, y = tonumber(y1) + 1 }, { x = tonumber(x2) + 1, y = tonumber(y2) + 1 }
-    return (p1.x < p2.x or p1.y < p2.y) and { p1, p2 } or { p2, p1 }
+    return { p1, p2 }
 end
 
 
@@ -25,35 +25,54 @@ function Line.get_type(line)
 end
 
 
+function Line.get_direction(line)
+    local function d(axis)
+        local result = line[2][axis] - line[1][axis]
+        return result ~= 0 and result / math.abs(result) or 0
+    end
+
+    local dir = {}
+    for _, axis in ipairs({ "x", "y" }) do
+        dir[axis] = d(axis)
+    end
+
+    return dir
+end
+
+
 local Diagram = {}
 Diagram._mt = { __index = Diagram }
 
 
-function Diagram:mark_horizontal_line(line)
-    assert(Line.get_type(line) == Line.TYPE.HORIZONTAL)
-    local i = line[1].x
-    for j = line[1].y, line[2].y do
-        local cover = self.board[j][i] + 1
-        self.board[j][i] = cover
+function Diagram:mark_field(x, y)
+    local cover = self.board[y][x] + 1
+    self.board[y][x] = cover
 
-        if cover == 2 then
-            self.dangerous_amount = self.dangerous_amount + 1
-        end
+    if cover == 2 then
+        self.dangerous_amount = self.dangerous_amount + 1
     end
 end
 
 
-function Diagram:mark_vertical_line(line)
-    assert(Line.get_type(line) == Line.TYPE.VERTICAL)
-    local j = line[1].y
-    for i = line[1].x, line[2].x do
-        local cover = self.board[j][i] + 1
-        self.board[j][i] = cover
-
-        if cover == 2 then
-            self.dangerous_amount = self.dangerous_amount + 1
-        end
+function Diagram:mark_line(line)
+    if not self.accept_diagonal and Line.get_type(line) == Line.TYPE.DIAGONAL then
+        return
     end
+
+    local direction = Line.get_direction(line)
+
+    local dx, dy = direction.x, direction.y
+    local x, y = line[2].x, line[2].y
+
+    local function mark_next(i, j)
+        self:mark_field(i, j)
+        if i == x and j == y then
+            return
+        end
+        return mark_next(i + dx, j + dy)
+    end
+
+    return mark_next(line[1].x, line[1].y)
 end
 
 
@@ -70,7 +89,7 @@ function Diagram:print()
 end
 
 
-function Diagram.new(width, height)
+function Diagram.new(width, height, accept_diagonal)
     local board = {}
     for _ = 1, height do
         local row = {}
@@ -84,6 +103,7 @@ function Diagram.new(width, height)
         board = board,
         width = width,
         height = height,
+        accept_diagonal = accept_diagonal,
         dangerous_amount = 0
     }
 
@@ -91,11 +111,11 @@ function Diagram.new(width, height)
 end
 
 
-local function parse_input(input)
+local function parse_input(input, accept_diagonal)
     local width = 0
     local height = 0
 
-    local lines = { {}, {}, {} }
+    local lines = {}
 
     for _, line_input in ipairs(input) do
         local line = Line.parse(line_input)
@@ -103,32 +123,31 @@ local function parse_input(input)
         width = math.max(width, math.max(line[1].x, line[2].x))
         height = math.max(height, math.max(line[1].y, line[2].y))
 
-        local type = Line.get_type(line)
-        table.insert(lines[type], line)
+        table.insert(lines, line)
     end
 
-    return Diagram.new(width, height), lines
+    return Diagram.new(width, height, accept_diagonal), lines
 end
 
 
-local function part_one(input)
-    local diagram, lines = parse_input(input)
+local function mark_lines(input, accept_diagonal)
+    local diagram, lines = parse_input(input, accept_diagonal)
 
-    for _, line in ipairs(lines[Line.TYPE.HORIZONTAL]) do
-        diagram:mark_horizontal_line(line)
-    end
-
-    for _, line in ipairs(lines[Line.TYPE.VERTICAL]) do
-        diagram:mark_vertical_line(line)
+    for _, line in ipairs(lines) do
+        diagram:mark_line(line)
     end
 
     return diagram.dangerous_amount
 end
 
 
+local function part_one(input)
+    return mark_lines(input, false)
+end
+
 
 local function part_two(input)
-    return 0
+    return mark_lines(input, true)
 end
 
 
@@ -140,5 +159,5 @@ local PUZZLE = {
 Utils.check(PUZZLE, part_one, 5, Utils.read_lines)
 Utils.run(PUZZLE, part_one, Utils.read_lines)
 
-Utils.check(PUZZLE, part_two, 0, Utils.read_lines)
+Utils.check(PUZZLE, part_two, 12, Utils.read_lines)
 Utils.run(PUZZLE, part_two, Utils.read_lines)

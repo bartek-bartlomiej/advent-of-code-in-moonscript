@@ -1,4 +1,3 @@
----@diagnostic disable: unused-function
 local Utils = require("utils")
 
 local BIRTH = 7

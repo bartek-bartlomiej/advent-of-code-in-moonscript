@@ -1,7 +1,7 @@
 local M = {}
 
 local FILENAME = function(puzzle, suffix) return string.format("%d/%02d", puzzle.year, puzzle.day) .. suffix end
-local EXAMPLE_FILENAME = function(puzzle) return FILENAME(puzzle, ".example") end
+local EXAMPLE_FILENAME = function(puzzle, number) return FILENAME(puzzle, (number or "") .. ".example") end
 local INPUT_FILENAME = function(puzzle) return FILENAME(puzzle, ".input") end
 
 
@@ -58,11 +58,21 @@ function M.parse_input(input, parse_line)
 end
 
 
-function M.check(puzzle, func, expected_value, read_input)
-    local example_input = read_input(EXAMPLE_FILENAME(puzzle))
+function M.check(puzzle, func, example_number, expected_value, read_input)
+    if not read_input then
+        example_number, expected_value, read_input = nil, example_number, expected_value
+    end
+    local example_input = read_input(EXAMPLE_FILENAME(puzzle, example_number))
     local result = func(example_input)
-    assert(result == expected_value, 
+    assert(result == expected_value,
         "Assertion failed, result is " .. tostring(result) .. ", expected " .. tostring(expected_value))
+end
+
+
+function M.multicheck(puzzle, func, tests, read_input)
+    for number, expected_value in pairs(tests) do
+        M.check(puzzle, func, number, expected_value, read_input)
+    end
 end
 
 

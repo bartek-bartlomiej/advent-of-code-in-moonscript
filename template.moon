@@ -4,11 +4,11 @@ Utils = require("utils")
 parse_input = (input) -> input
 
 
-part_one = (input) ->
+part_one = (data) ->
     0
 
 
-part_two = (input) ->
+part_two = (data) ->
     0
 
 

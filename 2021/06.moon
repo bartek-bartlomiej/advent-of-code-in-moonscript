@@ -32,7 +32,7 @@ class School
         for i = 1, SPAWN_CYCLE + CHILDHOOD
             @[i] = 0
 
-        for age in input::gmatch("(%d)")
+        for age in input\gmatch("(%d)")
             fish = tonumber(age) + 1
             @[fish] += 1
 

@@ -19,7 +19,6 @@ count_valid = (data, is_valid) ->
     unpack = table.unpack
 
     valid_amount = 0
-
     for case in *data
         valid_amount += 1 if is_valid(unpack(case))
     

@@ -63,14 +63,6 @@ read_raw = (filename) ->
 read_lines = (filename) -> [ line for line in io.lines(filename) ]
 
 
-read_groups = (filename) ->
-    input = with read_raw(filename)
-        \gsub("\n\n", "\t")
-        \gsub("\n", " ")
-    
-    [ line for line in string.gmatch(input, "[^\t]+") ]
-
-
 enable_string_indexing = () ->
     _mt = getmetatable("")
     __index = _mt.__index

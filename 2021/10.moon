@@ -50,9 +50,7 @@ part_one = (data) ->
         ["}"]: 1197
         [">"]: 25137
 
-    counts = with {}
-        for right, _ in pairs(MATCH.RIGHT)
-            [right] = 0
+    counts = { right, 0 for right, _ in pairs(MATCH.RIGHT) }
 
     for line in *data
         result, character = check_line(line)

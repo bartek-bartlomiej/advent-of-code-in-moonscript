@@ -34,7 +34,7 @@ class Passport
         PASSPORT_PATTERN = "^%d%d%d%d%d%d%d%d%d$"
 
         validate_year = (year, min, max) ->
-            return false if not year::find(YEAR_PATTERN) 
+            return false if not year\find(YEAR_PATTERN) 
             year = tonumber(year)
             
             min <= year and year <= max
@@ -60,9 +60,9 @@ class Passport
                         false
 
             [names.EYE_COLOR]: (v) -> EyesColors.set[v]
-            [names.HAIR_COLOR]: (v) -> v::find(HAIR_PATTERN)
+            [names.HAIR_COLOR]: (v) -> v\find(HAIR_PATTERN)
 
-            [names.PASSPORT_ID]: (v) -> v::find(PASSPORT_PATTERN)
+            [names.PASSPORT_ID]: (v) -> v\find(PASSPORT_PATTERN)
             [names.COUNTRY_ID]: (v) -> true
 
         { NAMES: names, :validators }
@@ -73,7 +73,8 @@ class Passport
     new: (group) =>
         fields, fields_amount = {}, 0
 
-        for key, value in group::gmatch("(%a%a%a):(%S+)")
+        for row in *group
+            key, value = row\match("(%a%a%a):(%S+)")
             fields[key] = value
             fields_amount = fields_amount + 1
     
@@ -101,12 +102,7 @@ class Passport
         true
 
 
-parse_input = (input) -> 
-    groups = input
-        ::gsub("\n\n", "\t")
-        ::gsub("\n", " ")
-
-    [ Passport(group) for group in groups::gmatch("[^\t]+") ]
+parse_input = (input) -> [ Passport(group) for group in *Utils.get_groups(input) ]
 
 
 count_valid = (passports, is_valid) ->
@@ -118,13 +114,13 @@ count_valid = (passports, is_valid) ->
 
 
 part_one = (passports) ->
-    is_valid = (passport) -> passport::has_required_fields!
+    is_valid = (passport) -> passport\has_required_fields!
 
     count_valid(passports, is_valid)
 
 
 part_two = (passports) ->
-    is_valid = (passport) -> passport::has_required_fields! and passport::has_valid_fields!
+    is_valid = (passport) -> passport\has_required_fields! and passport\has_valid_fields!
     
     count_valid(passports, is_valid)
 

@@ -89,14 +89,9 @@ parse_input = (input) ->
 
     marking_order = [ tonumber(number) for number in order_input\gmatch("(%d+)") ]
 
-    boards_input = boards_input
-        ::gsub("\n\n", "\r")
-        ::gsub("\n", "\t")
-        ::gsub("\r", "\n")
-
-    boards = for board_input in string.gmatch(boards_input, "[^\n]+")
-        board = for row_input in board_input\gmatch("[^\t]+")
-            [tonumber(number) for number in row_input\gmatch("(%d+)") ]
+    boards = for board in *Utils.get_groups(boards_input, true)
+        board = [ [ tonumber(number) for number in row\gmatch("(%d+)") ] for row in *board ]
+        
         BingoBoard(board)
 
     { :marking_order, :boards }

@@ -63,6 +63,17 @@ read_raw = (filename) ->
 read_lines = (filename) -> [ line for line in io.lines(filename) ]
 
 
+get_groups = (raw_input, keep_rows=false) ->
+    row_separator = if keep_rows then "\t" else " "
+    input = raw_input\gsub("\n\n", "\r")\gsub("\n", row_separator)\gsub("\r", "\n")
+    
+    return for group in input\gmatch("[^\n]+")
+        -- for row in group\gmatch("[^#{row_separator}]+")
+        --     print(row, "--")
+        --     row
+        [ row for row in group\gmatch("[^#{row_separator}]+") ]
+
+
 enable_string_indexing = () ->
     _mt = getmetatable("")
     __index = _mt.__index
@@ -75,4 +86,4 @@ enable_string_indexing = () ->
             __index[key]
 
 
-{ :run, :read_raw, :read_lines, :read_groups, :enable_string_indexing }
+{ :run, :read_raw, :read_lines, :get_groups, :enable_string_indexing }

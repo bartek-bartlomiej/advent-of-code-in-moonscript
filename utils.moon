@@ -56,10 +56,11 @@ read_raw = (filename) ->
         assert(file, "File #{filename} not found")
         input = \read("a")
         \close!
+    
     input
 
 
-read_lines = (filename) -> [line for line in io.lines(filename)]
+read_lines = (filename) -> [ line for line in io.lines(filename) ]
 
 
 read_groups = (filename) ->
@@ -67,11 +68,19 @@ read_groups = (filename) ->
         \gsub("\n\n", "\t")
         \gsub("\n", " ")
     
-    [line for line in string.gmatch(input, "[^\t]+")]
+    [ line for line in string.gmatch(input, "[^\t]+") ]
 
 
 enable_string_indexing = () ->
-    getmetatable("").__index = (str, key) -> string.sub(str, key, key)
+    _mt = getmetatable("")
+    __index = _mt.__index
+    sub = string.sub
+
+    _mt.__index = (str, key) ->
+        if type(key) == "number"
+            sub(str, key, key)
+        else
+            __index[key]
 
 
 { :run, :read_raw, :read_lines, :read_groups, :enable_string_indexing }

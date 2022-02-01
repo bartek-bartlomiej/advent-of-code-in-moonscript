@@ -32,11 +32,11 @@ multicheck = (part, tests, puzzle_number) ->
 run_part = (part, puzzle_number) ->
     tests = part.tests
     switch type(tests)
-        when "number"
+        when "table"
+            multicheck(part, tests, puzzle_number)
+        else
             test = result: tests
             check(part, test, puzzle_number)
-        else
-            multicheck(part, tests, puzzle_number)
     
     solution = solve(part, INPUT_FILENAME(puzzle_number))
     print(solution)

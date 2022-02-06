@@ -1,0 +1,53 @@
+Utils = require("src.utils")
+
+decode_ID = (line) ->
+    line
+        ::gsub("B", "1")
+        ::gsub("F", "0")
+        ::gsub("R", "1")
+        ::gsub("L", "0")
+        |> tonumber(_, 2)
+
+parse_input = (input) -> [ decode_ID(line) for line in *input ]
+
+
+part_one = (data) ->
+    local max_ID
+    for seat_ID in *data
+        max_ID = max_ID and math.max(max_ID, seat_ID) or seat_ID
+
+    assert(max_ID)
+
+    max_ID
+
+
+part_two = (data) ->
+    table.sort(data)
+
+    for i = 1, #data - 1
+        current_ID, next_ID = data[i], data[i + 1]
+        return current_ID + 1 if next_ID - current_ID == 2
+    
+    if data[1] == 1
+        0
+    elseif data[#data] == #data - 1
+        #data
+    else
+        error("Missing ID not found")
+
+
+parts:
+    [1]:
+        read: Utils.read_lines
+        parse: parse_input
+        solution: part_one
+        tests: 
+            a: 820
+    [2]:
+        read: Utils.read_lines
+        parse: parse_input
+        solution: part_two
+        tests:
+            b: 2
+            c: 0
+            d: 3

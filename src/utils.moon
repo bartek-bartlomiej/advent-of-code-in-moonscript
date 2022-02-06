@@ -79,6 +79,8 @@ get_groups = (raw_input, keep_rows=false) ->
 
 enable_string_indexing = () ->
     _mt = getmetatable("")
+    return if _mt.indexing_enabled
+
     __index = _mt.__index
     sub = string.sub
 
@@ -87,6 +89,7 @@ enable_string_indexing = () ->
             sub(str, key, key)
         else
             __index[key]
+    _mt.indexing_enabled = true
 
 
 { :run, :read_raw, :read_lines, :get_groups, :enable_string_indexing }

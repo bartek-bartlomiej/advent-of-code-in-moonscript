@@ -26,7 +26,7 @@ count_valid = (data, is_valid) ->
 
 
 count_occurences = (str, character) ->
-    _, count = string.gsub(str, character, character)
+    _, count = str\gsub(character, character)
     
     count
 

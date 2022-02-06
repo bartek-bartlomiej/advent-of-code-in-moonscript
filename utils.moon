@@ -3,7 +3,7 @@ EXAMPLE_FILENAME = (number, suffix="") -> FILENAME("example", number, suffix)
 INPUT_FILENAME = (number) -> FILENAME("input", number)
 
 
-solve = (part, filename) ->
+solve = (part, filename, arguments) ->
     -- in YueScript:
     -- filename
         -- |> part.read
@@ -14,31 +14,37 @@ solve = (part, filename) ->
     input = part.read(filename)
     data = part.parse(input)
     
-    part.solution(data)
+    part.solution(data, arguments)
     
 
 check = (part, test, puzzle_number) ->
-    { number: test_number, result: expected_result } = test
+    { number: test_number, result: expected_result, :arguments } = test
     filename = EXAMPLE_FILENAME(puzzle_number, test_number)
-    result = solve(part, filename)
+    result = solve(part, filename, arguments)
     assert(result == expected_result, "Assertion failed, result is #{result}, expected #{expected_result}")
 
-
-multicheck = (part, tests, puzzle_number) ->
+   
+multicheck = (part, tests, puzzle_number, tests_arguments, default_arguments) ->
     for number, result in pairs(tests)
-        check(part, { :number, :result }, puzzle_number)
+        test_arguments = tests_arguments[number] or default_arguments
+        check(part, { :number, :result, arguments: test_arguments }, puzzle_number)
 
 
 run_part = (part, puzzle_number) ->
+    local default_arguments, tests_arguments
+    if part.arguments
+        default_arguments = part.arguments.solution
+        tests_arguments = part.arguments.tests
+
     tests = part.tests
     switch type(tests)
         when "table"
-            multicheck(part, tests, puzzle_number)
+            multicheck(part, tests, puzzle_number, tests_arguments or {}, default_arguments)
         else
-            test = result: tests
+            test = result: tests, arguments: tests_arguments or default_arguments
             check(part, test, puzzle_number)
     
-    solution = solve(part, INPUT_FILENAME(puzzle_number))
+    solution = solve(part, INPUT_FILENAME(puzzle_number), default_arguments)
     print(solution)
 
 
@@ -68,9 +74,6 @@ get_groups = (raw_input, keep_rows=false) ->
     input = raw_input\gsub("\n\n", "\r")\gsub("\n", row_separator)\gsub("\r", "\n")
     
     return for group in input\gmatch("[^\n]+")
-        -- for row in group\gmatch("[^#{row_separator}]+")
-        --     print(row, "--")
-        --     row
         [ row for row in group\gmatch("[^#{row_separator}]+") ]
 
 
